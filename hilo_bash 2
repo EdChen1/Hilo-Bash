@@ -1,0 +1,98 @@
+target=
+guess=
+attempts=0
+prevrecord=0
+
+clear
+
+if [ "$1" = "-n" ] ; then
+
+ stty -echo
+ echo "**** PLAYER 1 ****"
+ echo -n "Please Enter Target Number: "
+ read target
+ stty echo
+ clear
+ guess=0
+
+ echo "**** PLAYER 2 ****"
+
+ while [ "$target" -ne "$guess" ]
+ do
+
+   echo -n "Guess: "
+   read guess
+
+   attempts=$(expr $attempts + 1)
+
+   if [ "$guess" -lt "$target" ] ; then
+	tput setaf 1
+	echo "Sorry, It is too Less"
+   elif [ "$guess" -gt "$target" ] ; then
+	tput setaf 1
+	echo "Sorry, It is too high"
+   else
+	tput setaf 2
+	echo "**** Matched ****"
+   fi
+
+   tput setaf 7
+ done
+ 
+else
+
+
+ stty -echo
+ echo "**** PLAYER 1 ****"
+ echo -n "Please Enter Target Word: "
+ read target
+ stty echo
+ clear
+
+ echo "**** PLAYER 2 ****"
+
+ while [ "$target" != "$guess" ]
+ do 
+
+   echo -n "Guess: "
+   read guess
+
+   attempts=$(expr $attempts + 1)
+
+   if [ "$guess" \< "$target" ] ; then
+	tput setaf 1
+	echo "Sorry, It is too Less"
+   elif [ "$guess" \> "$target" ] ; then
+	tput setaf 1
+	echo "Sorry, It is too high"
+   else
+	tput setaf 2
+	echo "**** Matched ****"
+   fi
+
+	tput setaf 7
+ done
+fi
+echo -e "\nTotal Number of Attempts : $attempts\n "
+
+## File
+
+if [ -f records.txt ] ; then
+   prevrecord=$(head -n 1 records.txt)
+else
+   echo -e "$attempts\n$target\n$(date)" > records.txt 
+fi
+
+if [ "$prevrecord" -gt "$attempts" ] ; then
+   tput setab 1
+   tput bold 
+   echo "************************************"
+   echo "This is the best performance to date"
+   echo -e "************************************\n"
+   echo -e "$attempts\n$target\n$(date)" > records.txt 
+   tput sgr0
+fi 
+
+## Write the performance to the file
+
+   echo -e "$attempts---$target---$(date)" >> allrecords.txt 
